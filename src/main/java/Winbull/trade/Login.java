@@ -58,7 +58,7 @@ public class Login {
 			} catch (Exception e) {
 				Main.test.log(Status.FAIL, "Exception occurred: " + e.getMessage());
 				ExcelUtils.writeLoginResult(i, "Fail", "");
-				/*kjasdbflajd*/
+			
 				failCount++;
 			}
 
