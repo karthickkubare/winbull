@@ -76,18 +76,6 @@ public class Main {
 				}
 				break;
 
-			case "trader":
-				if ("yes".equalsIgnoreCase(executionStatus)) {
-
-					int[] traderResult = Trader.execute(driver);
-					pass = traderResult[0];
-					fail = traderResult[1];
-					ExcelUtils.updateMaster(i + 1, pass, fail);
-					
-				}
-				break;
-
-
 			case "rcommoditytype":
 				if ("yes".equalsIgnoreCase(executionStatus)) {
 					int[] result = RcommodityType.execute(driver);
@@ -101,8 +89,38 @@ public class Main {
 				}
 				break;
 
+			case "commoditymaster":
+				if ("yes".equalsIgnoreCase(executionStatus)) {
+					int[] result = commaster.execute(driver);
+					pass = result[0];
+					fail = result[1];
+					System.out.println("PASS : " + pass);
+					System.out.println("FAIL : " + fail);
+					ExcelUtils.updateMaster(i + 1, pass, fail);
+				} else {
+					System.out.println("Execution Fail");
+				}
+				break;
+			case "commoditygrp":
+				if ("yes".equalsIgnoreCase(executionStatus)) {
+					int[] result = Commoditygrp.execute(driver);
+					pass = result[0];
+					fail = result[1];
+					ExcelUtils.updateMaster(i + 1, pass, fail);
+				}
+				break;
 
-				
+			case "trader":
+				if ("yes".equalsIgnoreCase(executionStatus)) {
+					System.out.println("Trader executed");
+					int[] traderResult = Trader.execute(driver);
+					pass = traderResult[0];
+					fail = traderResult[1];
+					ExcelUtils.updateMaster(i + 1, pass, fail);
+
+				}
+				break;
+
 			default:
 				System.out.println("No matching function for : ");
 			}
@@ -113,7 +131,6 @@ public class Main {
 				test.fail("fail Count: " + fail);
 			}
 
-			
 			ExcelUtils.saveExcel(excelPath);
 		}
 
