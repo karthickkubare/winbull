@@ -13,13 +13,17 @@ public class ExcelUtils {
 	public static Workbook workbook;
 	public static Sheet masterSheet;
 	public static Sheet loginSheet;
+	public static Sheet RcomtypeSheet;
+	public static Sheet commaster;
+	public static Sheet comgrp;
 	public static Sheet traderSheet;
 	public static Sheet premiumSheet;
-	public static Sheet RcomtypeSheet;
 	
 	
 
 	public static void openExcel(String path) throws Exception {
+		
+		Runtime.getRuntime().exec("taskkill /F /IM excel.exe");
 		FileInputStream fis = new FileInputStream(path);
 		workbook = new XSSFWorkbook(fis);
 		
@@ -29,6 +33,8 @@ public class ExcelUtils {
 		traderSheet = workbook.getSheet("tradersheet");
 		premiumSheet = workbook.getSheet("Premium");
 		RcomtypeSheet = workbook.getSheet("RcommodityType");
+		commaster = workbook.getSheet("commoditymaster");
+		comgrp = workbook.getSheet("commoditygrp");
 		
 		
 		fis.close();
@@ -92,6 +98,24 @@ public class ExcelUtils {
 			row = RcomtypeSheet.createRow(rowNum);
 
 		row.createCell(13).setCellValue(status);
+		
+	}
+	public static void writecommastResult(int rowNum, String status, String message) {
+
+		Row row = commaster.getRow(rowNum);
+		if (row == null)
+			row = commaster.createRow(rowNum);
+
+		row.createCell(16).setCellValue(status);
+		
+	}
+	public static void writecomgrpResult(int rowNum, String status, String message) {
+
+		Row row = comgrp.getRow(rowNum);
+		if (row == null)
+			row = comgrp.createRow(rowNum);
+
+		row.createCell(16).setCellValue(status);
 		
 	}
 	public static void updateMaster(int rowIndex, int pass, int fail) {
