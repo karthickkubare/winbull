@@ -6,16 +6,14 @@ import org.apache.poi.ss.usermodel.*;
 import org.openqa.selenium.*;
 import com.aventstack.extentreports.Status;
 
-public class Trader  {
-
-	
+public class Trader {
 
 	public static int[] execute(WebDriver driver) {
 
 		List<String> commodityList = commaster.dname;
 
 		for (String commodity : commodityList) {
-		    System.out.println(commodity);
+			System.out.println(commodity);
 		}
 
 		int passCount = 0;
@@ -30,15 +28,16 @@ public class Trader  {
 		
 
 		for (int i = 1; i <= rows; i++) {
-			
+
 			Row row = ExcelUtils.traderSheet.getRow(i);
-			
+			Row rowcg = ExcelUtils.comgrp.getRow(i);
+
+
 			if (row == null)
 				continue;
 
 			try {
-				
-				
+
 				DataFormatter formatter = new DataFormatter();
 				String name = row.getCell(1).getStringCellValue();
 				String aname = row.getCell(2).getStringCellValue();
@@ -53,19 +52,17 @@ public class Trader  {
 				String passw = row.getCell(9).getStringCellValue();
 				String lifetime = row.getCell(10).getStringCellValue();
 				System.out.println(lifetime);
-				//String date = formatter.formatCellValue(row.getCell(18));
+				// String date = formatter.formatCellValue(row.getCell(18));
 				String edit = row.getCell(14).getStringCellValue();
 				String delete = row.getCell(15).getStringCellValue();
-				String active= row.getCell(16).getStringCellValue();
-//				String buy = row.getCell(17).getStringCellValue();
-//				String sell = row.getCell(18).getStringCellValue();
-//				String amount = row.getCell(19).getStringCellValue();
-//				
-			//	System.out.println(date);
+				String active = row.getCell(16).getStringCellValue();
+				String buy = row.getCell(24).getStringCellValue();
+				String sell = row.getCell(25).getStringCellValue();
+				String amount = row.getCell(26).getStringCellValue();
+
+				// System.out.println(date);
 				Bfun.click(driver, By.xpath("//h4/a"));
 				Main.test.log(Status.INFO, "Creating Trader: " + name);
-
-			
 
 				Bfun.type(driver, By.name("fv[cus_name]"), name);
 				Bfun.type(driver, By.id("cus_alise_name"), aname);
@@ -79,10 +76,9 @@ public class Trader  {
 
 				Bfun.type(driver, By.id("cus_gstno"), gstno);
 				Bfun.type(driver, By.id("cus_panno"), panno);
-				
-				 
+
 				Bfun.scrollToBottom(driver, By.xpath("//button[normalize-space()='Save']"));
- 				 
+
 				Bfun.scrollToElement(driver, By.xpath("//button[normalize-space()='Save']"));
 				Bfun.scrollToBottom(driver, By.xpath("//button[normalize-space()='Save']"));
 
@@ -91,7 +87,7 @@ public class Trader  {
 				Bfun.scrollToElement(driver, By.xpath("//button[normalize-space()='Save']"));
 
 				Bfun.scrollToBottom(driver, By.xpath("//button[normalize-space()='Save']"));
-				
+
 				Bfun.click(driver, By.xpath("//button[normalize-space()='Save']"));
 				Thread.sleep(2000);
 				Bfun.click(driver, By.xpath("//input[@type='search']"));
@@ -101,85 +97,64 @@ public class Trader  {
 				System.out.println(searchname);
 
 				Thread.sleep(1000);
-			
+
 				String goldmin = formatter.formatCellValue(row.getCell(18));
 				String goldmax = formatter.formatCellValue(row.getCell(19));
- 				String goldallot = formatter.formatCellValue(row.getCell(20));
- 				String silvermin = formatter.formatCellValue(row.getCell(21));
- 				String silvermax = formatter.formatCellValue(row.getCell(22));
- 				String silverallot = formatter.formatCellValue(row.getCell(23));
-			
+				String goldallot = formatter.formatCellValue(row.getCell(20));
+				String silvermin = formatter.formatCellValue(row.getCell(21));
+				String silvermax = formatter.formatCellValue(row.getCell(22));
+				String silverallot = formatter.formatCellValue(row.getCell(23));
+				String excelCommodity = rowcg.getCell(1).getStringCellValue();
+
 
 				List<WebElement> rowsList = driver.findElements(By.xpath("//table//tbody//tr"));
 
 				boolean recordFound = false;
 
-				for (int j = 0; j < rowsList.size(); ) {
+				for (int j = 0; j < rowsList.size();) {
 
 					String traderName = rowsList.get(j).findElement(By.xpath("./td[2]")).getText();
-					
+
 					if (traderName.equalsIgnoreCase(searchname)) {
 						recordFound = true;
 						Main.test.log(Status.PASS, "Trader created successfully: " + name);
+
+						if (active.equalsIgnoreCase("yes")) {
+							Bfun.click(driver, By.xpath("//table/tbody/tr/td[7]"));
+							if (lifetime.equalsIgnoreCase("yes")) {
+								Bfun.setRadioButton(driver,
+										By.xpath("//*[@id=\"iframeForm\"]/div[3]/div[1]/div/div/div/label[1]"));
+							} else {
+								Bfun.setRadioButton(driver,
+										By.xpath("//*[@id=\"iframeForm\"]/div[3]/div[1]/div/div/div/label[1]"));
+							}
+							Bfun.setCheckboxWithExcelValue(driver, By.id("has_gminqty"), By.id("gold_min_qty"),
+									goldmin);
+
+							Bfun.setCheckboxWithExcelValue(driver, By.id("has_gmaxqty"), By.id("gold_max_qty"),
+									goldmax);
+							Bfun.setCheckboxWithExcelValue(driver, By.id("has_gallot_qty"), By.id("gold_allot_qty"),
+									goldallot);
+							Bfun.setCheckboxWithExcelValue(driver, By.id("has_sminqty"), By.id("silver_min_qty"),
+									silvermin);
+							Bfun.setCheckboxWithExcelValue(driver, By.id("has_smaxqty"), By.id("silver_max_qty"),
+									silvermax);
+							Bfun.setCheckboxWithExcelValue(driver, By.id("has_sallot_qty"), By.id("silver_allot_qty"),
+									silverallot);
+							Bfun.setComtraper(driver, "commodity_activity",excelCommodity,buy,sell,amount);
+
+							if (lifetime.equalsIgnoreCase("yes")) {
+								Bfun.setCheckbox(driver, By.id("cus_is_life_time"), lifetime);
+							}
 						
-						if(active.equalsIgnoreCase("yes"))
-						{
-							Bfun.click(driver,By.xpath("//table/tbody/tr/td[7]"));
-							if (lifetime.equalsIgnoreCase("yes")) 
-							{
-								Bfun.setRadioButton(driver, By.xpath("//*[@id=\"iframeForm\"]/div[3]/div[1]/div/div/div/label[1]"));
-							}
-							else
-							{
-								Bfun.setRadioButton(driver, By.xpath("//*[@id=\"iframeForm\"]/div[3]/div[1]/div/div/div/label[1]"));
-							}
- 							Bfun.setCheckboxWithExcelValue(driver, By.id("has_gminqty"), By.id("gold_min_qty"), goldmin);
- 							
- 							Bfun.setCheckboxWithExcelValue(driver, By.id("has_gmaxqty"), By.id("gold_max_qty"), goldmax);
- 							Bfun.setCheckboxWithExcelValue(driver, By.id("has_gallot_qty"), By.id("gold_allot_qty"), goldallot);
- 							Bfun.setCheckboxWithExcelValue(driver, By.id("has_sminqty"), By.id("silver_min_qty"), silvermin);
- 							Bfun.setCheckboxWithExcelValue(driver, By.id("has_smaxqty"), By.id("silver_max_qty"), silvermax);
- 							Bfun.setCheckboxWithExcelValue(driver, By.id("has_sallot_qty"), By.id("silver_allot_qty"), silverallot);
- 						
-							
-							if (lifetime.equalsIgnoreCase("yes")) 
-							  {
-								  Bfun.setCheckbox(driver, By.id("cus_is_life_time"), lifetime);
-							   }
-							int mcs = commodityList.size();
-							
-							for (int k = 0; k < mcs; k++) {
+							Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
+							Bfun.scrollToBottom(driver, By.xpath("//button[text()='Update']"));
+							Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
+							Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
 
-							    String commodity = commodityList.get(k);
+							Bfun.click(driver, By.xpath("//button[text()='Update']"));
+							Main.test.log(Status.PASS, "Trader Activated successfully: ");
 
-							    String tname = Bfun.getText(driver,
-							            By.xpath("//td[normalize-space()='" + commodity + "']"));
-
-							    if (tname.equalsIgnoreCase(commodity)) {
-
-//							        if (buy.equalsIgnoreCase("yes")) {
-//							            Bfun.enableCheckbox(driver,
-//							                    By.name("cdItems[cus_com_status_buy][" + k + "]"));
-//							        }
-//
-//							        if (sell.equalsIgnoreCase("yes")) {
-//							            Bfun.enableCheckbox(driver,
-//							                    By.name("cdItems[cus_com_status_sell][" + k + "]"));
-//							        }
-//
-//							        if (amount.equalsIgnoreCase("yes")) {
-//							            Bfun.enableCheckbox(driver,
-//							                    By.name("cdItems[cus_com_amountpurch][" + k + "]"));
-//							        }
-							    }
-							}							 Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
-							 Bfun.scrollToBottom(driver, By.xpath("//button[text()='Update']"));
-							 Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
-							 Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
-
-							 Bfun.click(driver, By.xpath("//button[text()='Update']"));
-							 Main.test.log(Status.PASS, "Trader Activated successfully: ");
-							
 						}
 						if (edit.equalsIgnoreCase("yes")) {
 							Bfun.click(driver, By.xpath("//table/tbody/tr/td[8]/a[1]"));
@@ -191,15 +166,13 @@ public class Trader  {
 							Bfun.click(driver, By.xpath("//button[text()='Update']"));
 							Main.test.log(Status.PASS, "Trader Updated Successfully: ");
 						}
-						
-						
+
 						if (delete.equalsIgnoreCase("yes")) {
 							Bfun.click(driver, By.xpath("//table/tbody/tr/td[8]/a[2]"));
 							Bfun.click(driver, By.id("commonConfirmBtn"));
 							Main.test.log(Status.PASS, "Trader deleted successfully: ");
 						}
-						
-						
+
 					}
 					if (recordFound) {
 						Main.test.log(Status.PASS, "Trader Runned successfully: ");
@@ -216,9 +189,8 @@ public class Trader  {
 					break;
 				}
 
-				
 			} catch (Exception e) {
-				
+
 				Main.test.log(Status.FAIL, "Exception occurred: " + e.getMessage());
 				ExcelUtils.writetraderResult(i, "Fail", "");
 				failCount++;

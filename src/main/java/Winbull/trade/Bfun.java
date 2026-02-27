@@ -3,6 +3,7 @@ package Winbull.trade;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
+import com.aventstack.extentreports.Status;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,30 +46,151 @@ public class Bfun {
 			js.executeScript("arguments[0].click();", element);
 		}
 	}
+	
+	public static void setComtraper(WebDriver driver, String tableId, String commodityName, String buy,String sell, String amount) {
 
-	public static void setCheckboxByCommodityName(WebDriver driver, String tableId, String commodityName,
-			int columnIndex, String excelValue) {
+		List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
+		for (int i = 0; i < rows.size(); i++) {
 
-		if (excelValue == null)
-			return;
+			WebElement rowElement = rows.get(i);
+			
+			String uiCommodity = rowElement.findElement(By.xpath("./td[1]")).getText().trim();
 
-// Accept both "yes" and "on"
-		if (!(excelValue.equalsIgnoreCase("yes") || excelValue.equalsIgnoreCase("on"))) {
-			return;
+			if (uiCommodity.equalsIgnoreCase(commodityName)) {
+				
+				WebElement buyCheckbox = rowElement.findElement(By.xpath("./td[4]//input[@type='checkbox']"));
+								
+				if (buy != null && buy.equalsIgnoreCase("yes")) {
+
+					if (!buyCheckbox.isSelected()) {
+						buyCheckbox.click();
+					}
+				}
+					
+					WebElement sellCheckbox = rowElement.findElement(By.xpath("./td[5]//input[@type='checkbox']"));
+					
+					if (sell != null && sell.equalsIgnoreCase("yes")) {
+
+						if (!sellCheckbox.isSelected()) {
+							sellCheckbox.click();
+						}
+					}
+						
+						WebElement amntCheckbox = rowElement.findElement(By.xpath("./td[6]//input[@type='checkbox']"));
+						
+						if (amount != null && amount.equalsIgnoreCase("yes")) {
+
+							if (!amntCheckbox.isSelected()) {
+								amntCheckbox.click();
+							}
+						}
+
+
+
+
+			}
 		}
+	}
+	public static void setCommodityValues(WebDriver driver, String tableId, String commodityName, String buyValue,
+			String sellValue,String diffTypeValue, String tradeBuyValue, String tradeSellValue, String buyPremiumValue,
+			String sellPremiumValue, String deliveryDaysValue) {
 
 		List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
 
-		for (WebElement row : rows) {
+		for (int i = 0; i < rows.size(); i++) {
 
-			String uiCommodity = row.findElement(By.xpath("./td[1]")).getText().trim();
+			WebElement rowElement = rows.get(i);
+
+			String uiCommodity = rowElement.findElement(By.xpath("./td[1]")).getText().trim();
 
 			if (uiCommodity.equalsIgnoreCase(commodityName)) {
 
-				WebElement checkbox = row.findElement(By.xpath("./td[" + columnIndex + "]//input[@type='checkbox']"));
+				WebElement buyCheckbox = rowElement.findElement(By.xpath("./td[2]//input[@type='checkbox']"));
+		       
 
-				if (!checkbox.isSelected()) {
-					checkbox.click();
+				if (buyValue != null && buyValue.equalsIgnoreCase("yes")) {
+
+					if (!buyCheckbox.isSelected()) {
+						buyCheckbox.click();
+					}
+
+
+					WebElement buyPremiumBox = rowElement.findElement(By.xpath("./td[5]//input"));
+					buyPremiumBox.clear();
+					buyPremiumBox.sendKeys(buyPremiumValue);
+					Main.test.log(Status.PASS, "BUY premium value is updated");
+				}
+
+
+				WebElement sellCheckbox = rowElement.findElement(By.xpath("./td[3]//input[@type='checkbox']"));
+
+				if (sellValue != null && sellValue.equalsIgnoreCase("yes")) {
+
+					if (!sellCheckbox.isSelected()) {
+						sellCheckbox.click();
+					}
+
+
+					WebElement sellPremiumBox = rowElement.findElement(By.xpath("./td[6]//input"));
+					sellPremiumBox.clear();
+					sellPremiumBox.sendKeys(sellPremiumValue);
+					Main.test.log(Status.PASS, "SELL premium value is updated");
+
+				}
+				
+				 if (diffTypeValue != null && !diffTypeValue.trim().isEmpty()) {
+
+		                List<WebElement> radios = rowElement.findElements(
+		                        By.xpath("./td[4]//input[@type='radio']"));
+
+		                for (int j = 0; j < radios.size(); j++) {
+
+		                    WebElement radio = radios.get(j);
+		                    String value = radio.getAttribute("value");
+
+		                    if (diffTypeValue.equalsIgnoreCase("auto")
+		                            && value.equalsIgnoreCase("auto")) {
+
+		                        if (!radio.isSelected()) {
+		                            radio.click();
+		                        }
+		                    }
+
+		                    if (diffTypeValue.equalsIgnoreCase("manual")
+		                            && value.equalsIgnoreCase("manual")) {
+
+		                        if (!radio.isSelected()) {
+		                            radio.click();
+		                        }
+		                    }
+		                }
+		            }
+
+				WebElement tradeBuyCheckbox = rowElement.findElement(By.xpath("./td[7]//input[@type='checkbox']"));
+
+				if (tradeBuyValue != null && tradeBuyValue.equalsIgnoreCase("yes")) {
+
+					if (!tradeBuyCheckbox.isSelected()) {
+						tradeBuyCheckbox.click();
+					}
+				}
+
+
+				WebElement tradeSellCheckbox = rowElement.findElement(By.xpath("./td[8]//input[@type='checkbox']"));
+
+				if (tradeSellValue != null && tradeSellValue.equalsIgnoreCase("yes")) {
+
+					if (!tradeSellCheckbox.isSelected()) {
+						tradeSellCheckbox.click();
+					}
+				}
+
+
+				if (deliveryDaysValue != null && !deliveryDaysValue.isEmpty()) {
+
+					WebElement deliveryBox = rowElement.findElement(By.xpath("./td[9]//input"));
+					deliveryBox.clear();
+					deliveryBox.sendKeys(deliveryDaysValue);
 				}
 
 				break;
