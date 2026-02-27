@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 
 public class Bfun {
 
@@ -20,9 +21,78 @@ public class Bfun {
 		element.sendKeys(value);
 	}
 
+	public static void typel(WebDriver driver, By locator, List<String> values) {
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+
+		element.clear();
+
+		for (String value : values) {
+			element.sendKeys(value);
+			element.sendKeys(Keys.ENTER); // optional (for search fields)
+		}
+	}
+
 	public static void click(WebDriver driver, By locator) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
-		wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+
+		try {
+			element.click();
+		} catch (Exception e) {
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+			js.executeScript("arguments[0].click();", element);
+		}
+	}
+
+	public static void setCheckboxByCommodityName(WebDriver driver, String tableId, String commodityName,
+			int columnIndex, String excelValue) {
+
+		if (excelValue == null)
+			return;
+
+// Accept both "yes" and "on"
+		if (!(excelValue.equalsIgnoreCase("yes") || excelValue.equalsIgnoreCase("on"))) {
+			return;
+		}
+
+		List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
+
+		for (WebElement row : rows) {
+
+			String uiCommodity = row.findElement(By.xpath("./td[1]")).getText().trim();
+
+			if (uiCommodity.equalsIgnoreCase(commodityName)) {
+
+				WebElement checkbox = row.findElement(By.xpath("./td[" + columnIndex + "]//input[@type='checkbox']"));
+
+				if (!checkbox.isSelected()) {
+					checkbox.click();
+				}
+
+				break;
+			}
+		}
+	}
+
+	public static boolean clickEdit(WebDriver driver, String dispName) {
+
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+			By editBtn = By.xpath("//table//tbody//tr[td[2][normalize-space()='" + dispName + "']]//td[7]/a[1]");
+
+			WebElement element = wait.until(ExpectedConditions.elementToBeClickable(editBtn));
+
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+
+			return true;
+
+		} catch (Exception e) {
+			System.out.println("Edit not clicked: " + e.getMessage());
+			return false;
+		}
 	}
 
 	public static String getText(WebDriver driver, By locator) {
@@ -34,7 +104,8 @@ public class Bfun {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		WebElement element = driver.findElement(locator);
 
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", element);
+		((JavascriptExecutor) driver)
+				.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", element);
 		wait.until(ExpectedConditions.elementToBeClickable(locator));
 
 	}
@@ -42,7 +113,8 @@ public class Bfun {
 	public static void enableCheckbox(WebDriver driver, By id) {
 
 		WebElement checkbox = driver.findElement(id);
-		if (!checkbox.isSelected()) {((JavascriptExecutor) driver).executeScript("arguments[0].click();", checkbox);
+		if (!checkbox.isSelected()) {
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", checkbox);
 		}
 	}
 

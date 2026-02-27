@@ -6,9 +6,17 @@ import org.apache.poi.ss.usermodel.*;
 import org.openqa.selenium.*;
 import com.aventstack.extentreports.Status;
 
-public class Trader {
+public class Trader  {
+
+	
 
 	public static int[] execute(WebDriver driver) {
+
+		List<String> commodityList = commaster.dname;
+
+		for (String commodity : commodityList) {
+		    System.out.println(commodity);
+		}
 
 		int passCount = 0;
 		int failCount = 0;
@@ -44,15 +52,17 @@ public class Trader {
 				String panno = row.getCell(8).getStringCellValue();
 				String passw = row.getCell(9).getStringCellValue();
 				String lifetime = row.getCell(10).getStringCellValue();
-				String date = formatter.formatCellValue(row.getCell(18));
+				System.out.println(lifetime);
+				//String date = formatter.formatCellValue(row.getCell(18));
 				String edit = row.getCell(14).getStringCellValue();
 				String delete = row.getCell(15).getStringCellValue();
 				String active= row.getCell(16).getStringCellValue();
-					
-				
-				
-				System.out.println(date);
-				Bfun.click(driver, By.xpath("//*[@id=\"content\"]/div[2]/div/div/div/div/div/h4/a"));
+//				String buy = row.getCell(17).getStringCellValue();
+//				String sell = row.getCell(18).getStringCellValue();
+//				String amount = row.getCell(19).getStringCellValue();
+//				
+			//	System.out.println(date);
+				Bfun.click(driver, By.xpath("//h4/a"));
 				Main.test.log(Status.INFO, "Creating Trader: " + name);
 
 			
@@ -106,7 +116,7 @@ public class Trader {
 
 				for (int j = 0; j < rowsList.size(); ) {
 
-					String traderName = rowsList.get(j).findElement(By.xpath("td[j]")).getText();
+					String traderName = rowsList.get(j).findElement(By.xpath("./td[2]")).getText();
 					
 					if (traderName.equalsIgnoreCase(searchname)) {
 						recordFound = true;
@@ -136,8 +146,33 @@ public class Trader {
 							  {
 								  Bfun.setCheckbox(driver, By.id("cus_is_life_time"), lifetime);
 							   }
-								
-							 Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
+							int mcs = commodityList.size();
+							
+							for (int k = 0; k < mcs; k++) {
+
+							    String commodity = commodityList.get(k);
+
+							    String tname = Bfun.getText(driver,
+							            By.xpath("//td[normalize-space()='" + commodity + "']"));
+
+							    if (tname.equalsIgnoreCase(commodity)) {
+
+//							        if (buy.equalsIgnoreCase("yes")) {
+//							            Bfun.enableCheckbox(driver,
+//							                    By.name("cdItems[cus_com_status_buy][" + k + "]"));
+//							        }
+//
+//							        if (sell.equalsIgnoreCase("yes")) {
+//							            Bfun.enableCheckbox(driver,
+//							                    By.name("cdItems[cus_com_status_sell][" + k + "]"));
+//							        }
+//
+//							        if (amount.equalsIgnoreCase("yes")) {
+//							            Bfun.enableCheckbox(driver,
+//							                    By.name("cdItems[cus_com_amountpurch][" + k + "]"));
+//							        }
+							    }
+							}							 Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
 							 Bfun.scrollToBottom(driver, By.xpath("//button[text()='Update']"));
 							 Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
 							 Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
@@ -158,7 +193,7 @@ public class Trader {
 						}
 						
 						
-						if (edit.equalsIgnoreCase("yes") && delete.equalsIgnoreCase("yes")) {
+						if (delete.equalsIgnoreCase("yes")) {
 							Bfun.click(driver, By.xpath("//table/tbody/tr/td[8]/a[2]"));
 							Bfun.click(driver, By.id("commonConfirmBtn"));
 							Main.test.log(Status.PASS, "Trader deleted successfully: ");

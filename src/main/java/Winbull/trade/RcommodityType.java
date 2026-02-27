@@ -1,4 +1,5 @@
 package Winbull.trade;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -9,9 +10,13 @@ import org.openqa.selenium.WebElement;
 import com.aventstack.extentreports.Status;
 public class RcommodityType {
 
-	public static int[] execute(WebDriver driver) {
-
-		int passCount = 0;
+	/*
+	 * public static List<String> dname = new ArrayList<>();
+	 */	public static int[] execute(WebDriver driver) {
+		
+		/*
+		 * dname.clear();
+		 */		int passCount = 0;
 		int failCount = 0;
 		By masters = By.xpath("//span[text()='Masters']");
 		Bfun.click(driver, masters);
@@ -33,9 +38,12 @@ public class RcommodityType {
 				
 				
 				DataFormatter formatter = new DataFormatter();
-				String dname = row.getCell(1).getStringCellValue();
-				String c_type = row.getCell(2).getStringCellValue().toLowerCase();
-//				String M_sym = row.getCell(3).getStringCellValue();
+				String commodityName = row.getCell(1).getStringCellValue();
+				/*
+				 * dname.add(commodityName);
+				 */				String c_type = row.getCell(2).getStringCellValue().toLowerCase();
+				String M_sym = row.getCell(3).getStringCellValue();
+				
 //				String B_sym = row.getCell(4).getStringCellValue();
 				String stax= formatter.formatCellValue(row.getCell(5));
 				String btax = formatter.formatCellValue(row.getCell(6));
@@ -48,10 +56,10 @@ public class RcommodityType {
 				
 				
 				Bfun.click(driver, By.xpath("//*[@id=\"content\"]/div[1]/div/div/div/div/div/h4/a"));
-				Main.test.log(Status.INFO, "Creating R-panel Commodity Type " + dname);
+				Main.test.log(Status.INFO, "Creating R-panel Commodity Type " + commodityName);
 				
 				
-				Bfun.type(driver, By.id("rcom_disname"), dname);
+				Bfun.type(driver, By.id("rcom_disname"), commodityName);
 				if(c_type.equalsIgnoreCase("gold"))
 				{
 					
@@ -86,29 +94,30 @@ public class RcommodityType {
 				Bfun.click(driver, By.xpath("//button[normalize-space()='Save']"));
 						Thread.sleep(2000);
 				Bfun.click(driver, By.xpath("//input[@type='search']"));
-				Bfun.type(driver, By.xpath("//input[@type='search']"), dname);
+				Bfun.type(driver, By.xpath("//input[@type='search']"), commodityName);
 				
 				List<WebElement> rowsList = driver.findElements(By.xpath("//table//tbody//tr"));
 
 				boolean recordFound = false;
 
-				for (int j = 0; j < rowsList.size(); ) {
+				for (int j = 0; j < rowsList.size(); j++) {
 
-					String dName = rowsList.get(j).findElement(By.xpath("td[3]")).getText();
-					if (dName.equalsIgnoreCase(dname)) {
+					String dName = rowsList.get(j).findElement(By.xpath("//*[@id=\"grid-data\"]/tbody/tr/td[2]")).getText();
+					if (dName.equalsIgnoreCase(commodityName)) {
 						recordFound = true;
-						Main.test.log(Status.PASS, "R-panel commodity created successfully: " + dname);
+						Main.test.log(Status.PASS, "R-panel commodity created successfully: " + commodityName);
 					
 						if(edit.equalsIgnoreCase("yes"))
 						{
-							Bfun.click(driver,By.xpath("//table/tbody/tr/td[7]"));
-							Bfun.type(driver, By.id("rcom_disname"), "GOLD_SANKARA");
+							Bfun.clickEdit(driver, dName);
+							Bfun.type(driver, By.id("rcom_disname"), dName);
 							Bfun.click(driver, By.xpath("//button[normalize-space()='Update']"));
 						}
 						if(delete.equalsIgnoreCase("yes"))
 						{
 							Bfun.click(driver,By.xpath("//table/tbody/tr/td[7]/a[2]"));
 							Bfun.click(driver, By.id("commonConfirmBtn"));
+							Thread.sleep(2000);
 							Main.test.log(Status.PASS, "R-panel_commodity_type deleted successfully: ");
 						}
 					}
@@ -116,12 +125,12 @@ public class RcommodityType {
 				if (recordFound) {
 					Main.test.log(Status.PASS, "R-panel_Commodity_type Runned successfully: ");
 					System.out.println("Trader Created successfully");
-					row.createCell(17).setCellValue("PASS");
+					row.createCell(13).setCellValue("PASS");
 					passCount++;
 				} else {
-					Main.test.log(Status.FAIL, "R-panel_Commodity_type creation failed: " + dname);
+					Main.test.log(Status.FAIL, "R-panel_Commodity_type creation failed: " + commodityName);
 					System.out.println("Trader Created failed");
-					row.createCell(17).setCellValue("FAIL");
+					row.createCell(13).setCellValue("FAIL");
 					failCount++;
 				}
 				Bfun.captureScreenshot(driver, "Trader failed" + i);
