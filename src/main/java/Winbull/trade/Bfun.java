@@ -22,348 +22,539 @@ public class Bfun {
 		element.sendKeys(value);
 	}
 
-	public static void typel(WebDriver driver, By locator, List<String> values) {
+    public static void uploadFile(WebDriver driver, By locator, String filePath) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        element.sendKeys(filePath);
+    }
 
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    public static void typel(WebDriver driver, By locator, List<String> values) {
 
-		element.clear();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
 
-		for (String value : values) {
-			element.sendKeys(value);
-			element.sendKeys(Keys.ENTER); // optional (for search fields)
-		}
-	}
+        element.clear();
 
-	public static void click(WebDriver driver, By locator) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+        for (String value : values) {
+            element.sendKeys(value);
+            element.sendKeys(Keys.ENTER); // optional (for search fields)
+        }
+    }
 
-		try {
-			element.click();
-		} catch (Exception e) {
-			JavascriptExecutor js = (JavascriptExecutor) driver;
-			js.executeScript("arguments[0].click();", element);
-		}
-	}
-	
-	public static void setComtraper(WebDriver driver, String tableId, String commodityName, String buy,String sell, String amount) {
+    public static void click(WebDriver driver, By locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
 
-		List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
-		for (int i = 0; i < rows.size(); i++) {
+        try {
+            element.click();
+        } catch (Exception e) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();", element);
+        }
+    }
 
-			WebElement rowElement = rows.get(i);
-			
-			String uiCommodity = rowElement.findElement(By.xpath("./td[1]")).getText().trim();
+    public static String getToastMessageIfPresent(WebDriver driver) {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+            WebElement msg = wait.until(ExpectedConditions
+                    .visibilityOfElementLocated(
+                            By.xpath("//span[contains(@class,'text-break')]")));
+            return msg.getText().trim();
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
-			if (uiCommodity.equalsIgnoreCase(commodityName)) {
-				
-				WebElement buyCheckbox = rowElement.findElement(By.xpath("./td[4]//input[@type='checkbox']"));
-								
-				if (buy != null && buy.equalsIgnoreCase("yes")) {
+    public static void setComtraper(WebDriver driver, String tableId, String commodityName, String buy, String sell,
+            String amount) {
 
-					if (!buyCheckbox.isSelected()) {
-						buyCheckbox.click();
-					}
-				}
-					
-					WebElement sellCheckbox = rowElement.findElement(By.xpath("./td[5]//input[@type='checkbox']"));
-					
-					if (sell != null && sell.equalsIgnoreCase("yes")) {
+        List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
+        for (int i = 0; i < rows.size(); i++) {
 
-						if (!sellCheckbox.isSelected()) {
-							sellCheckbox.click();
-						}
-					}
-						
-						WebElement amntCheckbox = rowElement.findElement(By.xpath("./td[6]//input[@type='checkbox']"));
-						
-						if (amount != null && amount.equalsIgnoreCase("yes")) {
+            WebElement rowElement = rows.get(i);
 
-							if (!amntCheckbox.isSelected()) {
-								amntCheckbox.click();
-							}
-						}
+            String uiCommodity = rowElement.findElement(By.xpath("./td[1]")).getText().trim();
 
+            if (uiCommodity.equalsIgnoreCase(commodityName)) {
 
+                WebElement buyCheckbox = rowElement.findElement(By.xpath("./td[4]//input[@type='checkbox']"));
 
+                if (buy != null && buy.equalsIgnoreCase("yes")) {
 
-			}
-		}
-	}
-	public static void setCommodityValues(WebDriver driver, String tableId, String commodityName, String buyValue,
-			String sellValue,String diffTypeValue, String tradeBuyValue, String tradeSellValue, String buyPremiumValue,
-			String sellPremiumValue, String deliveryDaysValue) {
+                    if (!buyCheckbox.isSelected()) {
+                        buyCheckbox.click();
+                    }
+                }
 
-		List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
+                WebElement sellCheckbox = rowElement.findElement(By.xpath("./td[5]//input[@type='checkbox']"));
 
-		for (int i = 0; i < rows.size(); i++) {
+                if (sell != null && sell.equalsIgnoreCase("yes")) {
 
-			WebElement rowElement = rows.get(i);
+                    if (!sellCheckbox.isSelected()) {
+                        sellCheckbox.click();
+                    }
+                }
 
-			String uiCommodity = rowElement.findElement(By.xpath("./td[1]")).getText().trim();
+                WebElement amntCheckbox = rowElement.findElement(By.xpath("./td[6]//input[@type='checkbox']"));
 
-			if (uiCommodity.equalsIgnoreCase(commodityName)) {
+                if (amount != null && amount.equalsIgnoreCase("yes")) {
 
-				WebElement buyCheckbox = rowElement.findElement(By.xpath("./td[2]//input[@type='checkbox']"));
-		       
+                    if (!amntCheckbox.isSelected()) {
+                        amntCheckbox.click();
+                    }
+                }
 
-				if (buyValue != null && buyValue.equalsIgnoreCase("yes")) {
+            }
+        }
+    }
 
-					if (!buyCheckbox.isSelected()) {
-						buyCheckbox.click();
-					}
+    public static void setCommodityValues(WebDriver driver, String tableId, String commodityName, String buyValue,
+            String sellValue, String diffTypeValue, String tradeBuyValue, String tradeSellValue, String buyPremiumValue,
+            String sellPremiumValue, String deliveryDaysValue) {
 
+        List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
 
-					WebElement buyPremiumBox = rowElement.findElement(By.xpath("./td[5]//input"));
-					buyPremiumBox.clear();
-					buyPremiumBox.sendKeys(buyPremiumValue);
-					Main.test.log(Status.PASS, "BUY premium value is updated");
-				}
+        for (int i = 0; i < rows.size(); i++) {
 
+            WebElement rowElement = rows.get(i);
 
-				WebElement sellCheckbox = rowElement.findElement(By.xpath("./td[3]//input[@type='checkbox']"));
+            String uiCommodity = rowElement.findElement(By.xpath("./td[1]")).getText().trim();
 
-				if (sellValue != null && sellValue.equalsIgnoreCase("yes")) {
+            if (uiCommodity.equalsIgnoreCase(commodityName)) {
 
-					if (!sellCheckbox.isSelected()) {
-						sellCheckbox.click();
-					}
+                WebElement buyCheckbox = rowElement.findElement(By.xpath("./td[2]//input[@type='checkbox']"));
 
+                if (buyValue != null && buyValue.equalsIgnoreCase("yes")) {
 
-					WebElement sellPremiumBox = rowElement.findElement(By.xpath("./td[6]//input"));
-					sellPremiumBox.clear();
-					sellPremiumBox.sendKeys(sellPremiumValue);
-					Main.test.log(Status.PASS, "SELL premium value is updated");
+                    if (!buyCheckbox.isSelected()) {
+                        buyCheckbox.click();
+                    }
 
-				}
-				
-				 if (diffTypeValue != null && !diffTypeValue.trim().isEmpty()) {
+                    WebElement buyPremiumBox = rowElement.findElement(By.xpath("./td[5]//input"));
+                    buyPremiumBox.clear();
+                    buyPremiumBox.sendKeys(buyPremiumValue);
+                    Main.test.log(Status.PASS, "BUY premium value is updated");
+                }
 
-		                List<WebElement> radios = rowElement.findElements(
-		                        By.xpath("./td[4]//input[@type='radio']"));
+                WebElement sellCheckbox = rowElement.findElement(By.xpath("./td[3]//input[@type='checkbox']"));
 
-		                for (int j = 0; j < radios.size(); j++) {
+                if (sellValue != null && sellValue.equalsIgnoreCase("yes")) {
 
-		                    WebElement radio = radios.get(j);
-		                    String value = radio.getAttribute("value");
+                    if (!sellCheckbox.isSelected()) {
+                        sellCheckbox.click();
+                    }
 
-		                    if (diffTypeValue.equalsIgnoreCase("auto")
-		                            && value.equalsIgnoreCase("auto")) {
+                    WebElement sellPremiumBox = rowElement.findElement(By.xpath("./td[6]//input"));
+                    sellPremiumBox.clear();
+                    sellPremiumBox.sendKeys(sellPremiumValue);
+                    Main.test.log(Status.PASS, "SELL premium value is updated");
 
-		                        if (!radio.isSelected()) {
-		                            radio.click();
-		                        }
-		                    }
+                }
 
-		                    if (diffTypeValue.equalsIgnoreCase("manual")
-		                            && value.equalsIgnoreCase("manual")) {
+                if (diffTypeValue != null && !diffTypeValue.trim().isEmpty()) {
 
-		                        if (!radio.isSelected()) {
-		                            radio.click();
-		                        }
-		                    }
-		                }
-		            }
+                    WebElement radio = rowElement.findElement(By.xpath(".//input[contains(@name,'com_premium_type') and @value='0']"));
+                    WebElement radio1 = rowElement.findElement(By.xpath(".//input[contains(@name,'com_premium_type') and @value='1']"));
 
-				WebElement tradeBuyCheckbox = rowElement.findElement(By.xpath("./td[7]//input[@type='checkbox']"));
+                    if (diffTypeValue.equalsIgnoreCase("auto")) {
 
-				if (tradeBuyValue != null && tradeBuyValue.equalsIgnoreCase("yes")) {
+                        if (!radio.isSelected()) {
+                            try {
+                                radio.click();
+                            } catch (Exception e) {
+                                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", radio);
+                            }
+                        }
+                        Main.test.log(Status.PASS, "Diff Type set to AUTO for: " + commodityName);
+                    }
 
-					if (!tradeBuyCheckbox.isSelected()) {
-						tradeBuyCheckbox.click();
-					}
-				}
+                    if (diffTypeValue.equalsIgnoreCase("manual")) {
 
+                        if (!radio1.isSelected()) {
+                            try {
+                                radio1.click();
+                            } catch (Exception e) {
+                                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", radio1);
+                            }
+                        }
+                        Main.test.log(Status.PASS, "Diff Type set to MANUAL for: " + commodityName);
+                    }
+                }
 
-				WebElement tradeSellCheckbox = rowElement.findElement(By.xpath("./td[8]//input[@type='checkbox']"));
+                WebElement tradeBuyCheckbox = rowElement.findElement(By.xpath("./td[7]//input[@type='checkbox']"));
 
-				if (tradeSellValue != null && tradeSellValue.equalsIgnoreCase("yes")) {
+                if (tradeBuyValue != null && tradeBuyValue.equalsIgnoreCase("yes")) {
 
-					if (!tradeSellCheckbox.isSelected()) {
-						tradeSellCheckbox.click();
-					}
-				}
+                    if (!tradeBuyCheckbox.isSelected()) {
+                        tradeBuyCheckbox.click();
+                    }
+                }
 
+                WebElement tradeSellCheckbox = rowElement.findElement(By.xpath("./td[8]//input[@type='checkbox']"));
 
-				if (deliveryDaysValue != null && !deliveryDaysValue.isEmpty()) {
+                if (tradeSellValue != null && tradeSellValue.equalsIgnoreCase("yes")) {
 
-					WebElement deliveryBox = rowElement.findElement(By.xpath("./td[9]//input"));
-					deliveryBox.clear();
-					deliveryBox.sendKeys(deliveryDaysValue);
-				}
+                    if (!tradeSellCheckbox.isSelected()) {
+                        tradeSellCheckbox.click();
+                    }
+                }
 
-				break;
-			}
-		}
-	}
+                if (deliveryDaysValue != null && !deliveryDaysValue.isEmpty()) {
 
-	public static boolean clickEdit(WebDriver driver, String dispName) {
+                    WebElement deliveryBox = rowElement.findElement(By.xpath("./td[9]//input"));
+                    deliveryBox.clear();
+                    deliveryBox.sendKeys(deliveryDaysValue);
+                }
 
-		try {
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                break;
+            }
+        }
+    }
 
-			By editBtn = By.xpath("//table//tbody//tr[td[2][normalize-space()='" + dispName + "']]//td[7]/a[1]");
+    public static boolean clickEdit(WebDriver driver, String dispName) {
 
-			WebElement element = wait.until(ExpectedConditions.elementToBeClickable(editBtn));
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-			((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+            By editBtn = By.xpath("//table//tbody//tr[td[2][normalize-space()='" + dispName + "']]//td[7]/a[1]");
 
-			return true;
+            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(editBtn));
 
-		} catch (Exception e) {
-			System.out.println("Edit not clicked: " + e.getMessage());
-			return false;
-		}
-	}
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
 
-	public static String getText(WebDriver driver, By locator) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-		return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
-	}
+            return true;
 
-	public static void scrollToElement(WebDriver driver, By locator) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		WebElement element = driver.findElement(locator);
+        } catch (Exception e) {
+            System.out.println("Edit not clicked: " + e.getMessage());
+            return false;
+        }
+    }
 
-		((JavascriptExecutor) driver)
-				.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", element);
-		wait.until(ExpectedConditions.elementToBeClickable(locator));
+    public static String getText(WebDriver driver, By locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
+    }
 
-	}
+    public static void scrollToElement(WebDriver driver, By locator) {
 
-	public static void enableCheckbox(WebDriver driver, By id) {
+        WebElement element = driver.findElement(locator);
 
-		WebElement checkbox = driver.findElement(id);
-		if (!checkbox.isSelected()) {
-			((JavascriptExecutor) driver).executeScript("arguments[0].click();", checkbox);
-		}
-	}
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+    }
 
-	public static void setCheckbox(WebDriver driver, By locator, String value) {
+    public static void enableCheckbox(WebDriver driver, By id) {
 
-		WebElement checkbox = driver.findElement(locator);
+        WebElement checkbox = driver.findElement(id);
+        if (!checkbox.isSelected()) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", checkbox);
+        }
+    }
 
-		boolean shouldBeChecked = value.equalsIgnoreCase("yes");
+    public static void setCheckbox(WebDriver driver, By locator, String value) {
 
-		if (checkbox.isSelected() != shouldBeChecked) {
-			checkbox.click();
-		}
-	}
+        WebElement checkbox = driver.findElement(locator);
 
-	public static void selectByText(WebDriver driver, By locator, String text) {
-		WebElement dropdownElement = driver.findElement(locator);
-		Select dropdown = new Select(dropdownElement);
-		dropdown.selectByVisibleText(text);
-	}
+        boolean shouldBeChecked = value.equalsIgnoreCase("yes");
 
-	public static void setCheckboxWithExcelValue(WebDriver driver, By checkboxLocator, By inputLocator,
-			String excelValue) {
+        if (checkbox.isSelected() != shouldBeChecked) {
+            checkbox.click();
+        }
+    }
 
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    public static void selectByText(WebDriver driver, By locator, String text) {
+        WebElement dropdownElement = driver.findElement(locator);
+        Select dropdown = new Select(dropdownElement);
+        dropdown.selectByVisibleText(text);
+    }
 
-		try {
+    public static void setCheckboxWithExcelValue(WebDriver driver, By checkboxLocator, By inputLocator, String excelValue) {
 
-			WebElement checkbox = wait.until(ExpectedConditions.visibilityOfElementLocated(checkboxLocator));
-			WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(inputLocator));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-			if (excelValue != null && !excelValue.trim().isEmpty()) {
+        try {
 
-				if (!checkbox.isSelected()) {
-					wait.until(ExpectedConditions.elementToBeClickable(checkbox));
-					checkbox.click();
-				}
+            WebElement checkbox = wait.until(ExpectedConditions.visibilityOfElementLocated(checkboxLocator));
+            WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(inputLocator));
 
-				input.clear();
-				input.sendKeys(excelValue);
+            if (excelValue != null && !excelValue.trim().isEmpty()) {
 
-			} else {
+                if (!checkbox.isSelected()) {
+                    wait.until(ExpectedConditions.elementToBeClickable(checkbox));
+                    checkbox.click();
+                }
 
-				if (checkbox.isSelected()) {
-					checkbox.click();
-				}
-			}
+                input.clear();
+                input.sendKeys(excelValue);
 
-		} catch (Exception e) {
-			System.out.println("Checkbox handling error: " + e.getMessage());
-		}
-	}
+            } else {
 
-	public static void setvalidTillDate(WebDriver driver, By locator, String date) {
-		String DoM = date;
-		String[] Date = DoM.split("-");
-		String year = Date[2].toString();
-		int month = Integer.parseInt(Date[1]);
-		String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September",
-				"October", "November", "December" };
-		String mon = months[(month) - 1];
-		String mOnTh = mon.substring(0, 3);
-		System.out.println(mOnTh);
-		String date1 = Date[0].toString();
-		driver.findElement(By.xpath("//*[@class=\"datepicker\"]")).click();
+                if (checkbox.isSelected()) {
+                    checkbox.click();
+                }
+            }
 
-		for (int i = 1; i <= 12; i++) {
-			String monthDate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/table/thead/tr/th[2]")).getText();
-			System.out.println("MonthDate is " + monthDate);
-			if (monthDate.contains(year)) {
-				System.out.println("Year Matches");
+        } catch (Exception e) {
+            System.out.println("Checkbox handling error: " + e.getMessage());
+        }
+    }
 
-				System.out.println(mOnTh);
-				driver.findElement(By.xpath("//span[contains(text(),'" + mOnTh + "')]")).click();
+    public static void setCheckboxWithBSValue(WebDriver driver, String tableId, String commodityName, String buy, String sell, String excelValue, String excelValue1) {
 
-				System.out.println(date);
-				driver.findElement(By.xpath("//td[@class='day' and contains(text(),'" + date1 + "')]")).click();
-				break;
-			} else {
-				WebElement prevBtn = driver.findElement(By.xpath("//th[@class='prev']"));
-				JavascriptExecutor js = (JavascriptExecutor) driver;
-				js.executeScript("arguments[0].click();", prevBtn);
-			}
-		}
-	}
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-	public static void setRadioButton(WebDriver driver, By locator) {
-		WebElement radio = driver.findElement(locator);
-		if (!radio.isSelected()) {
-			radio.click();
-		}
-	}
+        try {
+            List<WebElement> rows = driver.findElements(By.xpath("//table[@id='" + tableId + "']/tbody/tr"));
+            System.out.println(tableId);
+            for (int i = 0; i < rows.size(); i++) {
 
-	public static void setValidTillDate(WebDriver driver, By locator, String date) {
+                WebElement rowElement = rows.get(i);
 
-		WebElement dateField = driver.findElement(locator);
+                String uiCommodity = rowElement.findElement(By.xpath("./td[1]")).getText().trim();
+                if (uiCommodity.equalsIgnoreCase(commodityName)) {
 
-		dateField.clear();
-		dateField.sendKeys(date);
-		dateField.sendKeys(Keys.TAB); // triggers blur event
+                    WebElement buyInput = rowElement.findElement(By.xpath(".//td[2]//input"));
+                    WebElement buyCheckbox = rowElement.findElement(By.id("prem_combuy_active"));
+                    if (excelValue != null && !excelValue.trim().isEmpty()) {
 
-	}
+                        if (!buyCheckbox.isSelected()) {
+                            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", buyCheckbox);
+                        }
 
-	public static void scrollToBottom(WebDriver driver, By locator) {
-		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-		wait.until(ExpectedConditions.elementToBeClickable(locator));
-	}
+                        buyInput.clear();
+                        buyInput.sendKeys(excelValue);
 
-	public static void waiT(WebDriver driver, By locator) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-		wait.until(ExpectedConditions.elementToBeClickable(locator));
-	}
+                    } else {
 
-	public static void captureScreenshot(WebDriver driver, String testName) {
-		TakesScreenshot ts = (TakesScreenshot) driver;
-		File source = ts.getScreenshotAs(OutputType.FILE);
-		File destination = new File("Screenshot/" + testName + ".png");
+                        if (buyCheckbox.isSelected()) {
+                            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", buyCheckbox);
+                        }
+                    }
 
-		try {
-			FileUtils.copyFile(source, destination);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+                    WebElement sellInput = rowElement.findElement(By.xpath("./td[3]//input"));
+                    WebElement sellCheckbox = rowElement.findElement(By.id("prem_comsell_active"));
 
-	public static void refresh(WebDriver driver) {
-		driver.navigate().refresh();
-	}
+                    if (excelValue1 != null && !excelValue1.trim().isEmpty()) {
+
+                        if (!sellCheckbox.isSelected()) {
+                            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", sellCheckbox);
+                        }
+
+                        sellInput.clear();
+                        sellInput.sendKeys(excelValue1);
+
+                    } else {
+
+                        if (sellCheckbox.isSelected()) {
+                            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", sellCheckbox);
+                        }
+                    }
+
+                    break; // commodity matched and processed; no need to continue
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Checkbox handling error: " + e.getMessage());
+        }
+    }
+
+    public static void setvalidTillDate(WebDriver driver, By locator, String date) {
+        String DoM = date;
+        String[] Date = DoM.split("-");
+        String year = Date[2].toString();
+        int month = Integer.parseInt(Date[1]);
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September",
+            "October", "November", "December"};
+        String mon = months[(month) - 1];
+        String mOnTh = mon.substring(0, 3);
+        System.out.println(mOnTh);
+        String date1 = Date[0].toString();
+        driver.findElement(By.xpath("//*[@class=\"datepicker\"]")).click();
+
+        for (int i = 1; i <= 12; i++) {
+            String monthDate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/table/thead/tr/th[2]")).getText();
+            System.out.println("MonthDate is " + monthDate);
+            if (monthDate.contains(year)) {
+                System.out.println("Year Matches");
+
+                System.out.println(mOnTh);
+                driver.findElement(By.xpath("//span[contains(text(),'" + mOnTh + "')]")).click();
+
+                System.out.println(date);
+                driver.findElement(By.xpath("//td[@class='day' and contains(text(),'" + date1 + "')]")).click();
+                break;
+            } else {
+                WebElement prevBtn = driver.findElement(By.xpath("//th[@class='prev']"));
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                js.executeScript("arguments[0].click();", prevBtn);
+            }
+        }
+    }
+
+    public static void setRadioButton(WebDriver driver, By locator) {
+        WebElement radio = driver.findElement(locator);
+        if (!radio.isSelected()) {
+            radio.click();
+        }
+    }
+
+    public static void setValidTillDate(WebDriver driver, By locator, String date) {
+
+        WebElement dateField = driver.findElement(locator);
+
+        dateField.clear();
+        dateField.sendKeys(date);
+        dateField.sendKeys(Keys.TAB); // triggers blur event
+
+    }
+
+    public static void scrollToBottom(WebDriver driver, By locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(locator));
+        ((JavascriptExecutor) driver).executeScript("window.scrollTo(1000, document.body.scrollHeight)");
+
+    }
+
+    public static boolean setCustomerGroup(WebDriver driver, String customerName, String groupName) {
+
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            // 1. CLEAR then FILTER: clear the search box, then type the customer name
+            WebElement searchBox = driver.findElement(By.id("customersearch"));
+            searchBox.clear();
+            searchBox.sendKeys(customerName);
+
+            // Give the table a moment to filter the new DOM elements 
+            Thread.sleep(1000);
+
+            // 2. RETRIEVE THE ROW: Grab the now-filtered list of rows 
+            List<WebElement> tableRows = driver.findElements(By.xpath("//table[@id='data_grid']/tbody/tr"));
+
+            for (WebElement tableRow : tableRows) {
+
+                String uiCustomer = tableRow.findElement(By.xpath("./td[2]")).getText().trim();
+
+                if (uiCustomer.equalsIgnoreCase(customerName)) {
+
+                    // 3. TARGET THE DROPDOWN: Find the specific dropdown for this filtered target row
+                    WebElement groupDropdown = tableRow.findElement(
+                            By.xpath("./td[4]//select[contains(@class,'cgitems_comgroupid')]"));
+
+                    // Wait until it is clickable, then apply the select value
+                    wait.until(ExpectedConditions.elementToBeClickable(groupDropdown));
+                    Select select = new Select(groupDropdown);
+
+                    // Print all available options for debugging
+                    System.out.print("Available groups for " + customerName + ": ");
+                    for (WebElement opt : select.getOptions()) {
+                        System.out.print("[" + opt.getText().trim() + "] ");
+                    }
+                    System.out.println();
+
+                    // Try exact match first, then case-insensitive partial match as fallback
+                    boolean selected = false;
+                    for (WebElement opt : select.getOptions()) {
+                        if (opt.getText().trim().equalsIgnoreCase(groupName)) {
+                            select.selectByVisibleText(opt.getText().trim());
+                            selected = true;
+                            break;
+                        }
+                    }
+                    if (!selected) {
+                        // Fallback: partial match
+                        for (WebElement opt : select.getOptions()) {
+                            if (opt.getText().trim().toLowerCase().contains(groupName.toLowerCase())) {
+                                select.selectByVisibleText(opt.getText().trim());
+                                selected = true;
+                                System.out.println("Partial match used: '" + opt.getText().trim() + "' for requested: '" + groupName + "'");
+                                break;
+                            }
+                        }
+                    }
+
+                    if (selected) {
+                        System.out.println("Successfully set group '" + groupName + "' for customer: " + customerName);
+                        return true;
+                    } else {
+                        System.out.println("No matching group option found for: '" + groupName + "' (customer: " + customerName + ")");
+                        return false;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error in setCustomerGroup: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public static void selectDropdownCaseInsensitive(WebDriver driver, By locator, String text) {
+        WebElement dropdownElement = driver.findElement(locator);
+        Select select = new Select(dropdownElement);
+
+        // Print available options for debugging
+        List<WebElement> options = select.getOptions();
+        System.out.print("  Dropdown options: ");
+        for (WebElement opt : options) {
+            System.out.print("[" + opt.getText().trim() + "] ");
+        }
+        System.out.println();
+
+        for (WebElement opt : options) {
+            if (opt.getText().trim().equalsIgnoreCase(text)) {
+                select.selectByVisibleText(opt.getText().trim());
+                System.out.println("  Selected: " + opt.getText().trim());
+                return;
+            }
+        }
+
+        for (WebElement opt : options) {
+            if (opt.getText().trim().toLowerCase().contains(text.toLowerCase())) {
+                select.selectByVisibleText(opt.getText().trim());
+                System.out.println("  Partial match selected: " + opt.getText().trim() + " for: " + text);
+                return;
+            }
+        }
+
+        throw new RuntimeException("No dropdown option found matching: '" + text + "'");
+    }
+
+    public static void selectDropdownByValue(WebDriver driver, By locator, String value) {
+
+        WebElement dropdown = driver.findElement(locator);
+
+        Select select = new Select(dropdown);
+
+        select.selectByValue(value);
+    }
+
+    public static void waiT(WebDriver driver, By locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(locator));
+    }
+
+    public static void captureScreenshot(WebDriver driver, String testName) {
+        TakesScreenshot ts = (TakesScreenshot) driver;
+        File source = ts.getScreenshotAs(OutputType.FILE);
+        File destination = new File("Screenshot/" + testName + ".png");
+
+        try {
+            FileUtils.copyFile(source, destination);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void refresh(WebDriver driver) {
+        driver.navigate().refresh();
+    }
 
 }

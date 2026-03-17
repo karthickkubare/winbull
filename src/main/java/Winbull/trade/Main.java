@@ -120,7 +120,75 @@ public class Main {
 
 				}
 				break;
+			case "premium":
+				if ("yes".equalsIgnoreCase(executionStatus)) {
+					System.out.println("premium executed");
+					int[] result = Premium.execute(driver);
+					pass = result[0];
+					fail = result[1];
+					ExcelUtils.updateMaster(i + 1, pass, fail);
 
+				}
+				break;
+			case "customergrp":
+				if ("yes".equalsIgnoreCase(executionStatus)) {
+					System.out.println("Customer Group executed");
+					int[] cgresult = Customer_group.execute(driver);
+					pass = cgresult[0];
+					fail = cgresult[1];
+					System.out.println("PASS : " + pass);
+					System.out.println("FAIL : " + fail);
+					ExcelUtils.updateMaster(i + 1, pass, fail);
+				}
+				break;
+				
+			  case "cusmargin":
+                  if ("yes".equalsIgnoreCase(executionStatus)) {
+
+                      int[] marginResult = Margin.execute(driver);
+                      pass = marginResult[0];
+                      fail = marginResult[1];
+                      System.out.println("PASS : " + pass);
+                      System.out.println("FAIL : " + fail);
+                      ExcelUtils.updateMaster(i + 1, pass, fail);
+                  }
+                  break;
+			  case "rpanelset":
+                  if ("yes".equalsIgnoreCase(executionStatus)) {
+
+                      int[] rpanResult = RpanelSet.execute(driver);
+                      pass = rpanResult[0];
+                      fail = rpanResult[1];
+                      System.out.println("PASS : " + pass);
+                      System.out.println("FAIL : " + fail);
+                      ExcelUtils.updateMaster(i + 1, pass, fail);
+                  }
+                  break;
+                  
+			  case "marquee":
+                  if ("yes".equalsIgnoreCase(executionStatus)) {
+
+                      int[] marqResult = Marquee.execute(driver);
+                      pass = marqResult[0];
+                      fail = marqResult[1];
+                      System.out.println("PASS : " + pass);
+                      System.out.println("FAIL : " + fail);
+                      ExcelUtils.updateMaster(i + 1, pass, fail);
+                  }
+                  break;
+                  
+			  case "popup":
+                  if ("yes".equalsIgnoreCase(executionStatus)) {
+
+                      int[] popResult = Popup.execute(driver);
+                      pass = popResult[0];
+                      fail = popResult[1];
+                      System.out.println("PASS : " + pass);
+                      System.out.println("FAIL : " + fail);
+                      ExcelUtils.updateMaster(i + 1, pass, fail);
+                  }
+                  break;
+                  
 			default:
 				System.out.println("No matching function for : ");
 			}

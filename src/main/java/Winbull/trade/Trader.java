@@ -10,12 +10,7 @@ public class Trader {
 
 	public static int[] execute(WebDriver driver) {
 
-		List<String> commodityList = commaster.dname;
-
-		for (String commodity : commodityList) {
-			System.out.println(commodity);
-		}
-
+		
 		int passCount = 0;
 		int failCount = 0;
 		By masters = By.xpath("//span[text()='Masters']");
@@ -93,10 +88,6 @@ public class Trader {
 				Bfun.click(driver, By.xpath("//input[@type='search']"));
 				Bfun.type(driver, By.xpath("//input[@type='search']"), name);
 				Thread.sleep(1000);
-				String searchname = Bfun.getText(driver, By.xpath("//input[@type='search']"));
-				System.out.println(searchname);
-
-				Thread.sleep(1000);
 
 				String goldmin = formatter.formatCellValue(row.getCell(18));
 				String goldmax = formatter.formatCellValue(row.getCell(19));
@@ -107,15 +98,15 @@ public class Trader {
 				String excelCommodity = rowcg.getCell(1).getStringCellValue();
 
 
-				List<WebElement> rowsList = driver.findElements(By.xpath("//table//tbody//tr"));
-
+				List<WebElement> rowsList = driver.findElements(By.xpath("//table[@id='grid-data']/tbody/tr"));
 				boolean recordFound = false;
 
 				for (int j = 0; j < rowsList.size();) {
 
 					String traderName = rowsList.get(j).findElement(By.xpath("./td[2]")).getText();
+					System.out.println(traderName);
 
-					if (traderName.equalsIgnoreCase(searchname)) {
+					if (traderName.equalsIgnoreCase(name)) {
 						recordFound = true;
 						Main.test.log(Status.PASS, "Trader created successfully: " + name);
 
@@ -148,9 +139,13 @@ public class Trader {
 							}
 						
 							Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
-							Bfun.scrollToBottom(driver, By.xpath("//button[text()='Update']"));
-							Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
-							Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
+							/*
+							 * Bfun.scrollToBottom(driver, By.xpath("//button[text()='Update']"));
+							 */							/*
+							 * Bfun.scrollToElement(driver, By.xpath("//button[text()='Update']"));
+							 */							Thread.sleep(2000);
+						//	Bfun.setComtraper(driver, "commodity_activity",excelCommodity,buy,sell,amount);
+
 
 							Bfun.click(driver, By.xpath("//button[text()='Update']"));
 							Main.test.log(Status.PASS, "Trader Activated successfully: ");
