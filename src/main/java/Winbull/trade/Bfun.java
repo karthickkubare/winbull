@@ -12,15 +12,16 @@ import java.util.List;
 
 public class Bfun {
 
-	public static void openURL(WebDriver driver, String url) {
-		driver.get(url);
-	}
+    public static void openURL(WebDriver driver, String url) {
+        driver.get(url);
+    }
 
-	public static void type(WebDriver driver, By locator, String value) {
-		WebElement element = driver.findElement(locator);
-		element.clear();
-		element.sendKeys(value);
-	}
+    public static void type(WebDriver driver, By locator, String value) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        element.clear();
+        element.sendKeys(value);
+    }
 
     public static void uploadFile(WebDriver driver, By locator, String filePath) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
